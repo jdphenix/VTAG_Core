@@ -78,23 +78,33 @@ namespace VTAG_Attempt_2
             MainMenuINI menu = new MainMenuINI();
             if (File.Exists(path))
             {
-                
+
                 string[] file = File.ReadAllLines(path);
-                for(int i = 0; i < file.Length; i++)
+                string[] parsedLines = new string[file.Length];
+                for (int i = 0; i < file.Length; i++)
                 {
                     if (file[i].StartsWith("##"))
                     {
                         continue;
                     }
-                    string[] initialSplit = file[i].Split('=');
-                    var name = initialSplit[0];
-                    var properties = initialSplit[1];
-                    string[] splitProperties = properties.Split('|');
-                    menu.MainTitle.Name = name == "MainTitle" ? name : "Unexpected token on line 2";
-                    menu.MainTitle.Alignment = splitProperties[2];
+                    string[] split = file[i].Split('=');
+                    if (split.Length > 1)
+                        parsedLines[i] = split[1];
+                    else
+                        parsedLines[i] = "";
+                   
 
                 }
-                
+                string[] splitName  = parsedLines[1].Split('|');
+                string[] splitSub   = parsedLines[2].Split('|');
+                string[] splitVer   = parsedLines[3].Split('|');
+
+                menu.MainTitle.Name = splitName[0];
+                menu.MainTitle.Color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor),splitName[1], true);
+                menu.MainTitle.Alignment = splitName[2];
+
+
+
             }
             return menu;
         }
