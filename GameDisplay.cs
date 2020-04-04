@@ -9,68 +9,74 @@ namespace VTAG_Attempt_2
 {
     public static class GameDisplay
     {
-        public static string[] mainMenu;
+        //This will soon be removed entirely in favor for the MainMenuINI class.
 
-        public static void InitializeDisplay()
+        //internal static string[] mainMenu;
+        private static int GlobalPadding;
+        private static string paddingAsString = "";
+
+
+        public static void InitializeDisplay(int InitialWidth, int InitialHeight)
         {
-            GetMainMenu();
-            ParseMainMenu(@".\UI\MainMenu.ini");
-            if (mainMenu != null)
-            {
-                int widest = 0;
-                int lines = mainMenu.Length;
-                for (int i = 0; i < mainMenu.Length; i++)
-                {
-                    widest = mainMenu[i].Length > widest ? mainMenu[i].Length : widest;
-                }
-                Console.WindowWidth = widest + 1;
-            }
-            else
-            {
-                Console.WindowWidth = 100;
-                Console.WindowHeight = 50;
-            }
+
+
+            
+            Console.WindowWidth = InitialWidth;
+            Console.WindowHeight = InitialHeight;
 
             Console.BufferWidth = Console.WindowWidth;
             Console.BufferHeight = Console.WindowHeight;
         }
 
-        public static void GetMainMenu()
-        {
-            if (File.Exists(@".\UI\MainMenu.txt"))
-            {
-                mainMenu = File.ReadAllLines(@".\UI\MainMenu.txt");
-            } 
-            else if (File.Exists(@".\UI\Templates\MainMenu_Template.txt"))
-            {
-                mainMenu = File.ReadAllLines(@".\UI\Templates\MainMenu_Template.txt");
-            }
-            else
-            {
-                Console.WriteLine("This menu shouldn't be writing! If you see this, the menu file AND the template have gone missing or corrupt!");
-                Console.ReadKey(true);
-                System.Environment.Exit(-1);
-            }
-        }
+        //internal static void GetMainMenu()
+        //{
+        //    if (File.Exists(@".\UI\MainMenu.txt"))
+        //    {
+        //        mainMenu = File.ReadAllLines(@".\UI\MainMenu.txt");
+        //    } 
+        //    else if (File.Exists(@".\UI\Templates\MainMenu_Template.txt"))
+        //    {
+        //        mainMenu = File.ReadAllLines(@".\UI\Templates\MainMenu_Template.txt");
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("This menu shouldn't be writing! If you see this, the menu file AND the template have gone missing or corrupt!");
+        //        Console.ReadKey(true);
+        //        System.Environment.Exit(-1);
+        //    }
+        //}
 
-        public static void DrawMainMenu()
+        public static void DrawMainMenu(MainMenuINI menu)
         {
 
-            if(mainMenu != null)
+            if(menu != null)
             {
+                
                 Console.Clear();
-                for(int i = 0; i < mainMenu.Length; i++)
-                {
-                    Console.WriteLine(mainMenu[i]);
-                }
+
+                Console.ForegroundColor = menu.MainTitle.Color;
+                GetPadding(menu.MainTitle.Name);
+                Console.SetCursorPosition(GlobalPadding, 0);
+                Console.WriteLine(menu.MainTitle.Name);
+
+                Console.ForegroundColor = menu.Subtitle.Color;
+                GetPadding(menu.Subtitle.Name);
+                Console.SetCursorPosition(GlobalPadding, 1);
+                Console.WriteLine(menu.Subtitle.Name);
+
+                Console.ForegroundColor = menu.Version.Color;
+                GetPadding(menu.Version.Name);
+                Console.SetCursorPosition(GlobalPadding, 2);
+                Console.WriteLine(menu.Version.Name);
+
+
+                Console.ResetColor();
+
             }
 
         }
 
-        public static void DrawMainUI()
-        {
-
-        }
+        public static void DrawMainUI() { }
 
 
         public static MainMenuINI ParseMainMenu(string path)
@@ -81,19 +87,23 @@ namespace VTAG_Attempt_2
 
                 string[] file = File.ReadAllLines(path);
                 string[] parsedLines = new string[file.Length];
+                
                 for (int i = 0; i < file.Length; i++)
                 {
                     if (file[i].StartsWith("##"))
-                    {
-                        continue;
-                    }
+                        continue;                    
+
                     string[] split = file[i].Split('=');
+
+                    if (split[0].Equals("Padding"))
+                        paddingAsString = split[1];
+
+
                     if (split.Length > 1)
                         parsedLines[i] = split[1];
                     else
                         parsedLines[i] = "";
                    
-
                 }
                 string[] splitName  = parsedLines[1].Split('|');
                 string[] splitSub   = parsedLines[2].Split('|');
@@ -101,15 +111,33 @@ namespace VTAG_Attempt_2
 
                 menu.MainTitle.Name = splitName[0];
                 menu.MainTitle.Color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor),splitName[1], true);
-                menu.MainTitle.Alignment = splitName[2];
+                
 
+                menu.Subtitle.Name = splitSub[0];
+                menu.Subtitle.Color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), splitSub[1], true);
+                
 
+                menu.Version.Name = splitVer[0];
+                menu.Version.Color = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), splitVer[1], true);
 
             }
             return menu;
         }
 
-
-
+        internal static void GetPadding(string textToBeDisplayed)
+        {
+            switch (paddingAsString)
+            {
+                case "center":
+                    GlobalPadding = Console.BufferWidth / 2 - textToBeDisplayed.Length / 2;
+                        break;
+                case "left":
+                    GlobalPadding = 0;
+                    break;
+                case "right":
+                    GlobalPadding = Console.BufferWidth - textToBeDisplayed.Length;
+                    break;
+            }
+        }
     }
 }
