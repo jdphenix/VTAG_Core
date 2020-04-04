@@ -9,9 +9,7 @@ namespace VTAG_Attempt_2
 {
     public static class GameDisplay
     {
-        //This will soon be removed entirely in favor for the MainMenuINI class.
 
-        //internal static string[] mainMenu;
         private static int GlobalPadding;
         private static string paddingAsString = "";
 
@@ -19,8 +17,6 @@ namespace VTAG_Attempt_2
         public static void InitializeDisplay(int InitialWidth, int InitialHeight)
         {
 
-
-            
             Console.WindowWidth = InitialWidth;
             Console.WindowHeight = InitialHeight;
 
@@ -28,23 +24,7 @@ namespace VTAG_Attempt_2
             Console.BufferHeight = Console.WindowHeight;
         }
 
-        //internal static void GetMainMenu()
-        //{
-        //    if (File.Exists(@".\UI\MainMenu.txt"))
-        //    {
-        //        mainMenu = File.ReadAllLines(@".\UI\MainMenu.txt");
-        //    } 
-        //    else if (File.Exists(@".\UI\Templates\MainMenu_Template.txt"))
-        //    {
-        //        mainMenu = File.ReadAllLines(@".\UI\Templates\MainMenu_Template.txt");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("This menu shouldn't be writing! If you see this, the menu file AND the template have gone missing or corrupt!");
-        //        Console.ReadKey(true);
-        //        System.Environment.Exit(-1);
-        //    }
-        //}
+
 
         public static void DrawMainMenu(MainMenuINI menu)
         {
