@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VTAG_Attempt_2
@@ -15,7 +16,7 @@ namespace VTAG_Attempt_2
 
 
         public static void InitializeDisplay(int InitialWidth, int InitialHeight)
-        {
+        { 
 
             Console.WindowWidth = InitialWidth;
             Console.WindowHeight = InitialHeight;
@@ -31,27 +32,26 @@ namespace VTAG_Attempt_2
 
             if(menu != null)
             {
-                
-                Console.Clear();
+                    Console.Clear();
 
-                Console.ForegroundColor = menu.MainTitle.Color;
-                GetPadding(menu.MainTitle.Name);
-                Console.SetCursorPosition(GlobalPadding, 0);
-                Console.WriteLine(menu.MainTitle.Name);
+                    Console.ForegroundColor = menu.MainTitle.Color;
+                    GetPadding(menu.MainTitle.Name);
+                    Console.SetCursorPosition(GlobalPadding, 0);
+                    Console.WriteLine(menu.MainTitle.Name);
 
-                Console.ForegroundColor = menu.Subtitle.Color;
-                GetPadding(menu.Subtitle.Name);
-                Console.SetCursorPosition(GlobalPadding, 1);
-                Console.WriteLine(menu.Subtitle.Name);
+                    Console.ForegroundColor = menu.Subtitle.Color;
+                    GetPadding(menu.Subtitle.Name);
+                    Console.SetCursorPosition(GlobalPadding, 1);
+                    Console.WriteLine(menu.Subtitle.Name);
 
                 Console.ForegroundColor = menu.Version.Color;
-                GetPadding(menu.Version.Name);
-                Console.SetCursorPosition(GlobalPadding, 2);
-                Console.WriteLine(menu.Version.Name);
+                    GetPadding(menu.Version.Name);
+                    Console.SetCursorPosition(GlobalPadding, 2);
+                    Console.WriteLine(menu.Version.Name);
 
-
-                Console.ResetColor();
-
+                    Thread.Sleep(30);
+                    Console.ResetColor();
+                
             }
 
         }

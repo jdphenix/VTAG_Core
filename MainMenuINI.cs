@@ -35,11 +35,14 @@ namespace VTAG_Attempt_2
     {
         public Title MainTitle { get; set; }
         public Title Subtitle { get; set; }
+        public Title Version { get; set; }
+        public int   Padding { get; set; }
 
         public MainMenuINI()
         {
-            MainTitle = new Title();
-            Subtitle = new Title();
+            MainTitle   = new Title();
+            Subtitle    = new Title();
+            Version     = new Title();
         }
 
     }
@@ -48,6 +51,6 @@ namespace VTAG_Attempt_2
     {
         public string Name { get; set; }
         public ConsoleColor Color { get; set; }
-        public string Alignment { get; set; }
+        
     }
 }
