@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.ExceptionServices;
+using System.Text;
 
 namespace VTAG_Attempt_2
 {
@@ -10,78 +10,92 @@ namespace VTAG_Attempt_2
     /// </summary>
     public class DisplayArea
     {
-        public Point    Location    { get; private set; }
-        public Size     Size        { get; private set; }
 
-        private int ulIndex, urIndex, llIndex, lrIndex;
+        internal Size Size;
+        internal Point Location;
+        internal Point topLeft, topRight, bottomLeft, bottomRight;
+        private char
+         ulCorner = '╔',
+         llCorner = '╚',
+         urCorner = '╗',
+         lrCorner = '╝',
+         vertical = '║',
+         horizontal = '═';
 
-        private string box;
-        private string 
-         ulCorner = "╔",
-         llCorner = "╚",
-         urCorner = "╗",
-         lrCorner = "╝",
-         vertical = "║",
-         horizontal = "═";
+        internal char[,] Box;
 
-        
 
-        internal DisplayArea(Point Location, Size Size)
+        public DisplayArea(Point Location, Size Size)
         {
             this.Location = Location;
             this.Size = Size;
-            ulIndex = 0;
-            urIndex = Size.Width;
-            
+
+            topLeft = new Point(Location.X, Location.Y);
+            topRight = new Point(Location.X + Size.Width, Location.Y);
+            bottomLeft = new Point(Location.X, Location.Y + Size.Height);
+            bottomRight = new Point(Location.X + Size.Width, Location.Y + Size.Height);
+
+            Box = new char[Size.Width + 1, Size.Height + 1];
+
+
+
         }
-
-        
-        internal void Build()
+        internal void Create() 
         {
-            
-            if (Size.Width is 0) { throw new NullReferenceException("Size was uninitialized during method call of Build()"); }
-
-            box += ulCorner;
-
-            for (int i = 0; i < Size.Width - 2; i++)
-                box += horizontal;
-
-            box += urCorner;
-            
-
-            for (int i = 0; i < Size.Height; i++)
+            for(int h = 0; h <= Size.Height; h++)
             {
-                box += vertical;
-                for (int j = 0; j < Size.Width - 2; j++)
-                    box += " ";
-                box += vertical;
-                
+                for(int w = 0; w <= Size.Width; w++)
+                {
+                    if(w == 0 && h == 0)
+                        continue;
+                    if (w == Size.Width && h == 0)
+                        continue;
+                    if (w == 0 && h == Size.Height)
+                        continue;
+                    if (w == Size.Width && h == Size.Height)
+                        continue;
+                    if (h == 0 || h == Size.Height)
+                    {
+                        Box[w, h] = horizontal;
+                        continue;
+                    }
+                    if (w == 0 || w == Size.Width)
+                    {
+                        Box[w, h] = vertical;
+                        continue;
+                    }
+                    else { Box[w, h] = ' '; }
+
+                }
             }
-            box += llCorner;
-            for (int i = 0; i < Size.Width - 2; i++)
-                box += horizontal;
-            box += lrCorner;
-
-            llIndex = box.Length - Size.Width;
-            lrIndex = box.Length - 1;
-                
-            
-
-            
         }
 
 
-        /// <summary>
-        /// Displays the <see cref="DisplayArea"/> in the appropriate position.
-        /// </summary>
-        public void Show()
+        internal void SetCorners()
         {
-            Console.SetCursorPosition(Location.X, Location.Y);
-            Console.Write(box.Substring(0, Size.Width));
-            for (int i = 0; i < Size.Height + 2; i++)
+            char[] corners = new char[4];
+            corners = DisplayAreaManager.CheckCorners(this);
+            Box[0, 0] = corners[0];
+            Box[Size.Width, 0] = corners[1];
+            Box[0, Size.Height] = corners[2];
+            Box[Size.Width, Size.Height] = corners[3];
+        }
+
+
+        internal void Show()
+        {
+            StringBuilder sb = new StringBuilder(Size.Width + Size.Height);
+            for (int h = 0; h <= Size.Height; h++)
             {
-                Console.SetCursorPosition(Location.X, Location.Y + i);
-                Console.Write(box.Substring(i * Size.Width, Size.Width));
+                for (int w = 0; w <= Size.Width; w++)
+                {
+                    sb.Append(Box[w, h]);
+                }
+
+
+                Console.SetCursorPosition(Location.X, Location.Y + h);
+                Console.WriteLine(sb);
+                sb.Clear();
             }
         }
 
